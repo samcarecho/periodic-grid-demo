@@ -171,7 +171,18 @@ gulp.task('html', function () {
 // scripts and CSS for you.
 gulp.task('vulcanize', function () {
   return gulp.src('dist/index.html')
-    .pipe(polybuild({maximumCrush: true}))
+    .pipe($.vulcanize({
+      stripComments: true,
+      inlineCss: true,
+      inlineScripts: true,
+      excludes: [
+        path.resolve('./dist/bower_components/firebase/firebase.js'),
+        path.resolve('./dist/bower_components/firebase-element/firebase.html'),
+        path.resolve('./dist/bower_components/firebase-element/firebase-collection.html'),
+        path.resolve('./dist/bower_components/firebase-element/firebase-query-behavior.html')
+      ]
+    }))
+    .pipe(polybuild({maximumCrush: false}))
     .pipe(gulp.dest('dist/'));
 });
 

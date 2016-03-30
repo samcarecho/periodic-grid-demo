@@ -12,7 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 
 
-<dom-module id="juice-element">
+<dom-module id="periodic-element">
   <template>
     <style>
       :host {
@@ -27,14 +27,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: #fff;
         background-color: #ccc;
       }
-      .juice-id {
+      .symbol {
         display: block;
         font-size: 9vw;
         font-family: 'Montserrat', sans-serif;
         font-weight: 900;
         padding: 0;
       }
-      .juice-name {
+      .short-name {
         display: block;
         font-size: 3vw;
         white-space: nowrap;
@@ -46,25 +46,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
     </style>
-    <div class="juice-id">{{juiceId}}</div>
-    <div class="juice-name">{{juiceName}}</div>
+    <div class="symbol">{{symbol}}</div>
+    <div class="short-name">{{shortName}}</div>
   </template>
   <script>
   (function() {
     'use strict';
 
     Polymer({
-      is: 'juice-element',
+      is: 'periodic-element',
 
       properties: {
-        juiceId: {
+        symbol: {
           type: String,
           value: 'JE',
           notify: true
         },
-        juiceName: {
+        shortName: {
           type: String,
-          value: 'Juice Name',
+          value: 'Short Name',
           notify: true
         },
         bgColor: {
@@ -80,12 +80,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_applyColor'
         }
       },
-      _applyBgColor: function(newValue, oldValue) {
-        console.log(oldValue);
+      _applyBgColor: function(newValue) {
+        //console.log(oldValue);
         this.style.backgroundColor = newValue;
       },
-      _applyColor: function(newValue, oldValue) {
-        console.log(oldValue);
+      _applyColor: function(newValue) {
+        //console.log(oldValue);
         this.style.color = newValue;
       }
     });
