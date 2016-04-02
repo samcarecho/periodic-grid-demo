@@ -45,13 +45,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <firebase-collection
       location="https://dantes-modern.firebaseio.com/flavorData"
-      data="{{juices}}"></firebase-collection>
+      orderByChild="elementClass"
+      orderByValue="true"
+      data="{{juices}}"
+      log="true"></firebase-collection>
 
     <div id="elWrapper" class="horizontal layout center-justified wrap">
       <template is="dom-repeat"
                 items="{{juices}}"
                 filter="{{computeFilter(filter)}}">
-        <periodic-element class="column flex-2"
+        <periodic-element
+                class="flex-2"
                 symbol="{{item.elementId}}"
                 short-name="{{item.nameShort}}"
                 color="{{item.colorClass}}"
@@ -66,20 +70,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       Polymer({
         is: 'periodic-grid',
 
-        ready: function() {
-          var intViewportWidth = window.innerWidth;
-          var intViewportHeight = window.innerHeight;
-
-          var parentW = Polymer.dom(this.$.elWrapper);
-          console.log(intViewportWidth);
-          console.log(intViewportHeight);
-        },
-
         properties: {
           juices: {
             type: Object,
             value: [],
-            notify: true
+            notify: true,
+            observer: '_juicer'
           },
           selected: {
             type: String,
@@ -120,6 +116,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
             };
           }
+        },
+        _juicer: function(newValue, oldValue) {
+          console.log(newValue);
+          console.log(oldValue);
         },
         _selected: function(string) {
           this.filter = string;

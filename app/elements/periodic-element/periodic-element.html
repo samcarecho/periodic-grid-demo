@@ -29,14 +29,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       .symbol {
         display: block;
-        font-size: 9vw;
         font-family: 'Montserrat', sans-serif;
         font-weight: 900;
         padding: 0;
       }
       .short-name {
         display: block;
-        font-size: 3vw;
         white-space: nowrap;
         overflow: hidden;
         text-wrap: none;
@@ -56,11 +54,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is: 'periodic-element',
 
+      ready: function() {
+        var intViewportWidth = window.innerWidth;
+        //var intViewportHeight = window.innerHeight;
+        var periodicElPadding = 0;
+        var maxW = 175;
+
+        if (intViewportWidth <= 1024) {
+          periodicElPadding = 3;
+        }
+        else {
+          periodicElPadding = 8;
+        }
+
+        var periodicElWidth = (intViewportWidth - (8 * periodicElPadding) )/4;
+        //console.log(this.root);
+        var wCalc = periodicElWidth > maxW? maxW : periodicElWidth;
+        this.style.minWidth = wCalc + 'px';
+        this.style.maxWidth = wCalc + 'px';
+        this.style.height = wCalc + 'px';
+
+        this.querySelector('.symbol').style.fontSize = (wCalc * 0.5) + 'px';
+        this.querySelector('.short-name').style.fontSize = (wCalc * 0.15) + 'px';
+        this.querySelector('.short-name').style.marginTop = (wCalc * 0.15) / 2 + 'px';
+
+      },
+
       properties: {
         symbol: {
           type: String,
           value: 'JE',
           notify: true
+        },
+        periodicElWidth: {
+          type: String,
+          value: 0,
+          notify:false
         },
         shortName: {
           type: String,
