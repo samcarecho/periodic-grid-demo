@@ -11,9 +11,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
-<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../periodic-element/periodic-element.html">
+<link rel="import" href="../periodic-filter/periodic-filter.html">
 
 <dom-module id="periodic-grid">
 
@@ -30,25 +29,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <paper-radio-group selected="{{selected}}">
-      <paper-radio-button name="">All</paper-radio-button>
-      <paper-radio-button name="counterBreakfast">Breakfast</paper-radio-button>
-      <paper-radio-button name="counterWonka">Wonka</paper-radio-button>
-      <paper-radio-button name="counterDessert">Dessert</paper-radio-button>
-      <paper-radio-button name="counterHerbal">Herbal</paper-radio-button>
-      <paper-radio-button name="counterFruit">Fruity</paper-radio-button>
-    </paper-radio-group>
-    <label>
-      Search:
-      <input type="text" value="{{searchString::input}}" />
-    </label>
-
     <firebase-collection
       location="https://dantes-modern.firebaseio.com/flavorData"
       orderByChild="elementClass"
       orderByValue="true"
-      data="{{juices}}"
-      log="true"></firebase-collection>
+      data="{{juices}}"></firebase-collection>
+
+    <periodic-filter filter="{{filter}}"> </periodic-filter>
 
     <div id="elWrapper" class="horizontal layout center-justified wrap">
       <template is="dom-repeat"
@@ -70,6 +57,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       Polymer({
         is: 'periodic-grid',
 
+        ready: function() {
+          console.log(this.querySelector('periodic-filter').filter);
+        },
+
         properties: {
           juices: {
             type: Object,
@@ -77,23 +68,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             notify: true,
             observer: '_juicer'
           },
-          selected: {
-            type: String,
-            value: '',
-            notify: true,
-            observer: '_selected'
-          },
-          searchString: {
-            type: String,
-            value: '',
-            notify: true,
-            observer: '_searchString'
-          },
           filter: {
             type: String,
             value: '',
             notify: true,
-            observer: '_filter'
+            observer: '_filterObserver'
           }
         },
 
@@ -121,18 +100,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log(newValue);
           console.log(oldValue);
         },
-        _selected: function(string) {
-          this.filter = string;
-          if(string) {
-            this.searchString = '';
+        _filterObserver: function(newValue) {
+          var filter = this.querySelector('periodic-filter').filter;
+
+          if (newValue != filter){
+            this.filter = filter;
           }
-        },
-        _searchString: function(newValue) {
-          this.filter = newValue;
-          this.selected = '';
-        },
-        _filter: function(newValue) {
-          console.log(newValue);
         }
       });
 
