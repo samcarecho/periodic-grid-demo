@@ -175,12 +175,7 @@ gulp.task('vulcanize', function () {
       stripComments: true,
       inlineCss: true,
       inlineScripts: true,
-      excludes: [
-        path.resolve('./dist/bower_components/firebase/firebase.js'),
-        path.resolve('./dist/bower_components/firebase-element/firebase.html'),
-        path.resolve('./dist/bower_components/firebase-element/firebase-collection.html'),
-        path.resolve('./dist/bower_components/firebase-element/firebase-query-behavior.html')
-      ]
+      excludes: [path.resolve('./dist/bower_components/firebase/firebase.js')]
     }))
     .pipe(polybuild({maximumCrush: false}))
     .pipe(gulp.dest('dist/'));

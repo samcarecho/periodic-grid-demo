@@ -27,6 +27,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         max-width: 18vw;
         height: 18vw;
       }
+      #elWrapper {
+        overflow-y: auto;
+        height: 54vh;
+      }
     </style>
 
     <firebase-collection
@@ -37,7 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <periodic-filter filter="{{filter}}"> </periodic-filter>
 
-    <div id="elWrapper" class="horizontal layout center-justified wrap">
+    <div id="elWrapper" on-track="handleTrack" class="horizontal layout center-justified wrap">
       <template is="dom-repeat"
                 items="{{juices}}"
                 filter="{{computeFilter(filter)}}">
@@ -58,27 +62,73 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         is: 'periodic-grid',
 
         ready: function() {
+          this.trigger = true;
+          this.filter = 'all';
           console.log(this.querySelector('periodic-filter').filter);
         },
 
         properties: {
           juices: {
-            type: Object,
+            type: Array,
             value: [],
-            notify: true,
-            observer: '_juicer'
+            notify: true
           },
           filter: {
             type: String,
             value: '',
             notify: true,
             observer: '_filterObserver'
-          }
+          },
+          trigger: Boolean,
+          value: true,
+          notify: false,
+          observer: '_trigger'
         },
 
+        handleTrack: function(e) {
+          //console.log(e);
+          switch(e.detail.state) {
+            case 'start':
+              //console.log('Tracking started!');
+              //console.log(e.detail.hover());
+              break;
+            case 'track':
+              if (this.trigger) {
+                if (Math.abs(e.detail.dx) > 100 ) {
+                  //console.log('ready to trigger new filter');
+                  this.trigger = false;
+                  if (e.detail.dx > 0) {
+                    this.querySelector('periodic-filter').direction = -1;
+                    this.querySelector('periodic-filter').selectPrevious();
+                  } else {
+                    this.querySelector('periodic-filter').direction = 1;
+                    this.querySelector('periodic-filter').selectNext();
+                  }
+                  this.$.elWrapper.scrollTop = 0;
+                }
+
+                if (Math.abs(e.detail.dy) > 100 ) {
+                  console.log('ready to trigger new filter');
+                  this.trigger = false;
+                  var elWrapperH = this.$.elWrapper.clientHeight;
+                  if (e.detail.dy > 0) {
+                    this.$.elWrapper.scrollTop -= elWrapperH;
+                  } else {
+                    this.$.elWrapper.scrollTop += elWrapperH;
+                  }
+                }
+              }
+              break;
+            case 'end':
+              //console.log('Tracking ended!');
+              this.trigger = true;
+              break;
+          }
+
+        },
         computeFilter: function(string) {
           //console.log(string);
-          if (!string) {
+          if (!string || string === 'all') {
             // set filter to null to disable filtering
             return null;
           } else {
@@ -96,16 +146,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             };
           }
         },
-        _juicer: function(newValue, oldValue) {
-          console.log(newValue);
-          console.log(oldValue);
-        },
         _filterObserver: function(newValue) {
-          var filter = this.querySelector('periodic-filter').filter;
-
-          if (newValue != filter){
-            this.filter = filter;
-          }
+          //var filter = this.querySelector('periodic-filter').filter;
+          //console.log(newValue);
+          this.computeFilter(newValue);
+        },
+        _trigger: function() {
+          //this.querySelector('periodic-filter').selectNext;
+          //console.log(this.trigger);
         }
       });
 
